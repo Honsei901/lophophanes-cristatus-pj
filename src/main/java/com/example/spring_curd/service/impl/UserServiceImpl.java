@@ -7,7 +7,9 @@ import com.example.spring_curd.service.UserService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,5 +25,20 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> getUsers() {
     return userRepository.findAll();
+  }
+
+  @Override
+  public User getUser(Integer id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id"));
+    return user;
+  }
+
+  @Override
+  public void updateUser(Integer id, User user) {
+    userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id"));
+    user.setId(id);
+    userRepository.save(user);
+
   }
 }
