@@ -12,7 +12,6 @@ services:
     depends_on:
       - mysql
       
-
   mysql:
     image: mysql:5.7
     container_name: mysql_container
@@ -22,7 +21,9 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ../database:/var/lib/mysql
+    entrypoint: >
+      sh -c "mkdir -p ../database && exec docker-entrypoint.sh mysqld"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -34,7 +35,3 @@ services:
       - "8080:80"
     depends_on:
       - mysql
-
-
-volumes:
-  mysql_data:
