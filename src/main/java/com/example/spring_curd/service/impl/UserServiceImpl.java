@@ -1,5 +1,6 @@
 package com.example.spring_curd.service.impl;
 
+import com.example.spring_curd.dto.UserDTO;
 import com.example.spring_curd.entity.User;
 import com.example.spring_curd.repository.UserRepository;
 import com.example.spring_curd.service.UserService;
@@ -40,5 +41,21 @@ public class UserServiceImpl implements UserService {
     user.setId(id);
     userRepository.save(user);
 
+  }
+
+  @Override
+  public void deleteUser(Integer id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id"));
+    userRepository.delete(user);
+
+  }
+
+  @Override
+  public void updateName(Integer id, UserDTO userDTO) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user id"));
+    user.setName(userDTO.getName());
+    userRepository.save(user);
   }
 }
