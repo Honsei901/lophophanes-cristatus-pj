@@ -1,27 +1,19 @@
-# ビルドステージ
 FROM maven:3.8.6-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
-# Mavenの依存関係をキャッシュするために、最初にpom.xmlをコピー
 COPY pom.xml .
 
-# 依存関係をダウンロード
 RUN mvn dependency:go-offline -B
 
-# ソースコードをコピー
 COPY src ./src
 
-# アプリケーションをビルド
 RUN mvn clean package -DskipTests
 
-# 実行ステージ
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-# ビルドステージからjarファイルをコピー
 COPY --from=builder /app/target/*.jar app.jar
 
-# アプリケーションを実行
 ENTRYPOINT ["java", "-jar", "app.jar"]
